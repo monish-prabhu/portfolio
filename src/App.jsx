@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MatrixRain from './components/MatrixRain.jsx';
 import Typewriter from './components/Typewriter.jsx';
 import {
@@ -17,11 +17,12 @@ import {
   SiGrafana,
   SiPrometheus,
 } from 'react-icons/si';
-import { FiCode, FiCloud, FiServer, FiShare2 } from 'react-icons/fi';
-import { FaGithub, FaLinkedin, FaTrophy } from 'react-icons/fa';
+import { FiCode, FiCloud, FiServer, FiShare2, FiChevronDown } from 'react-icons/fi';
+import { FaGithub, FaLinkedin, FaTrophy, FaBrain } from 'react-icons/fa';
 import { TbSql } from 'react-icons/tb';
 
 function App() {
+  const [showScrollHint, setShowScrollHint] = useState(false);
   const name = 'Monish';
   const role = 'Software Engineer';
   const intro =
@@ -52,6 +53,7 @@ function App() {
     { name: 'Jenkins', icon: SiJenkins },
     { name: 'GitHub Actions', icon: SiGithubactions },
     { name: 'Microservices', icon: FiShare2 },
+    { name: 'Generative AI', icon: FaBrain },
     { name: 'Grafana', icon: SiGrafana },
     { name: 'Prometheus', icon: SiPrometheus },
   ];
@@ -62,18 +64,52 @@ function App() {
     Leetcode: FaTrophy,
   };
 
+  const socialIconColorByLabel = {
+    GitHub: '#ffffff',
+    LinkedIn: '#0A66C2',
+    Leetcode: '#FFA116',
+  };
+
   // Title animation removed per request; document.title remains as set in index.html
+
+  // Show a floating down-arrow on small screens if skills are below the fold
+  useEffect(() => {
+    function updateVisibility() {
+      const skillsEl = document.getElementById('skills');
+      if (!skillsEl) return;
+      const isSmallScreen = window.innerWidth <= 768;
+      if (!isSmallScreen) {
+        setShowScrollHint(false);
+        return;
+      }
+      const rect = skillsEl.getBoundingClientRect();
+      const shouldShow = rect.top > window.innerHeight - 80; // needs scroll to reach
+      setShowScrollHint(shouldShow);
+    }
+    updateVisibility();
+    window.addEventListener('resize', updateVisibility);
+    window.addEventListener('scroll', updateVisibility, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateVisibility);
+      window.removeEventListener('scroll', updateVisibility);
+    };
+  }, []);
 
   return (
     <main className="container">
       <MatrixRain />
       <header>
         <h1 className="headline"><span className="greeting">Hi, I'm {name}</span><span className="caret" aria-hidden="true">_</span></h1>
-        <h4 className="subtitle">I'm a {role}.</h4>
+        <h3 className="subtitle">Software Engineer @ Maersk, Ex-Wells Fargo</h3>
       </header>
 
       <section aria-label="About" className="section fade-in">
-        <p className="intro"><Typewriter text={intro} speed={10} startDelay={80} /></p>
+        <p className="intro">
+          <span className="reserve" aria-hidden="true">{intro}</span>
+          <span className="typewriter-overlay">
+            <Typewriter text={intro} speed={10} startDelay={80} />
+          </span>
+        </p>
       </section>
 
       <section aria-label="Social links" className="section fade-in" style={{ animationDelay: '120ms' }}>
@@ -83,7 +119,8 @@ function App() {
               <a className="link-button" href={link.href} target="_blank" rel="noreferrer">
                 {(() => {
                   const Icon = socialIconByLabel[link.label] || FiShare2;
-                  return <Icon aria-hidden="true" style={{ marginRight: 8 }} />;
+                  const color = socialIconColorByLabel[link.label] || 'currentColor';
+                  return <Icon aria-hidden="true" style={{ marginRight: 8, color }} />;
                 })()}
                 <span>{link.label}</span>
               </a>
@@ -92,12 +129,34 @@ function App() {
         </ul>
       </section>
 
-      <section aria-label="Primary skills" className="section fade-in" style={{ animationDelay: '240ms' }}>
+      <section id="skills" aria-label="Primary skills" className="section fade-in" style={{ animationDelay: '240ms' }}>
         <h2 className="section-title">Primary skills</h2>
         <ul className="skills grid" role="list">
           {skills.map(({ name, icon: Icon }) => (
             <li key={name} className="skill-chip icon-chip">
-              <Icon aria-hidden="true" />
+              <Icon aria-hidden="true" style={{ color: ({
+                'Python': '#3776AB',
+                'C#': '#68217A',
+                'JavaScript': '#F7DF1E',
+                'TypeScript': '#3178C6',
+                '.NET': '#512BD4',
+                'FastAPI': '#009688',
+                'Flask': '#ffffff',
+                'Azure': '#0078D4',
+                'GCP': '#4285F4',
+                'REST APIs': '#9CA3AF',
+                'SQL': '#2F74C0',
+                'Postgres': '#4169E1',
+                'React': '#61DAFB',
+                'Redux Toolkit': '#764ABC',
+                'CI/CD': '#D33833',
+                'Jenkins': '#D33833',
+                'GitHub Actions': '#2088FF',
+                'Microservices': '#22C55E',
+                'Generative AI': '#10A37F',
+                'Grafana': '#F46800',
+                'Prometheus': '#E6522C',
+              })[name] || 'currentColor' }} />
               <span>{name}</span>
             </li>
           ))}
@@ -105,8 +164,22 @@ function App() {
       </section>
 
       <footer className="footer">
-        <small>© {new Date().getFullYear()} {name}. All rights reserved.</small>
+        <small>© {new Date().getFullYear()} {name} Prabhu. All rights reserved.</small>
       </footer>
+
+      {showScrollHint && (
+        <button
+          type="button"
+          className="floating-scroll"
+          aria-label="Scroll to skills"
+          onClick={() => {
+            document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setShowScrollHint(false);
+          }}
+        >
+          <FiChevronDown aria-hidden="true" />
+        </button>
+      )}
     </main>
   );
 }

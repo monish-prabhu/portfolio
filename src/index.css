@@ -16,8 +16,8 @@ html, body, #root {
 
 body {
   margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
   color: var(--fg);
   background: var(--bg);
 }
@@ -107,6 +107,18 @@ header {
   text-align: left;
   max-width: 70ch;
   margin: 0 auto;
+  position: relative;
+  min-height: calc(1em * 1.7 * 3); /* reserve about 3 lines of space to avoid layout shift */
+}
+
+.intro .reserve {
+  visibility: hidden; /* reserve full width/height without showing duplicate text */
+  white-space: pre-wrap;
+}
+
+.intro .typewriter-overlay {
+  position: absolute;
+  inset: 0;
 }
 
 .type-caret {
@@ -153,7 +165,8 @@ header {
 .link-button svg {
   width: 16px;
   height: 16px;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.35));
+  /* keep brand colors visible; only apply subtle glow */
+  filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.25));
 }
 .link-button:hover {
   background: linear-gradient(180deg, #131313, #0c0c0c);
@@ -254,7 +267,8 @@ header {
 .icon-chip svg {
   width: 18px;
   height: 18px;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.35));
+  /* retain native icon colors; subtle neon glow only */
+  filter: drop-shadow(0 0 6px rgba(0, 255, 65, 0.25));
 }
 
 .footer {
@@ -262,4 +276,40 @@ header {
   padding-top: 36px;
   text-align: center;
   color: var(--muted);
+}
+
+/* Floating scroll-to-skills button for small screens */
+.floating-scroll {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid #2a2a2a;
+  background: #111;
+  color: #e5e7eb;
+  cursor: pointer;
+  z-index: 50;
+  transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
+}
+.floating-scroll:hover {
+  transform: translateY(-1px);
+  background: #161616;
+  border-color: #3a3a3a;
+}
+.floating-scroll:active {
+  transform: translateY(0);
+}
+.floating-scroll svg {
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+@media (min-width: 769px) {
+  .floating-scroll { display: none; }
 }
