@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import MatrixRain from './components/MatrixRain.jsx';
+import Typewriter from './components/Typewriter.jsx';
 import {
   SiPython,
   SiJavascript,
@@ -17,6 +18,7 @@ import {
   SiPrometheus,
 } from 'react-icons/si';
 import { FiCode, FiCloud, FiServer, FiShare2 } from 'react-icons/fi';
+import { FaGithub, FaLinkedin, FaTrophy } from 'react-icons/fa';
 import { TbSql } from 'react-icons/tb';
 
 function App() {
@@ -54,6 +56,12 @@ function App() {
     { name: 'Prometheus', icon: SiPrometheus },
   ];
 
+  const socialIconByLabel = {
+    GitHub: FaGithub,
+    LinkedIn: FaLinkedin,
+    Leetcode: FaTrophy,
+  };
+
   // Title animation removed per request; document.title remains as set in index.html
 
   return (
@@ -65,7 +73,7 @@ function App() {
       </header>
 
       <section aria-label="About" className="section fade-in">
-        <p className="intro">{intro}</p>
+        <p className="intro"><Typewriter text={intro} speed={10} startDelay={80} /></p>
       </section>
 
       <section aria-label="Social links" className="section fade-in" style={{ animationDelay: '120ms' }}>
@@ -73,7 +81,11 @@ function App() {
           {socialLinks.map((link) => (
             <li key={link.label}>
               <a className="link-button" href={link.href} target="_blank" rel="noreferrer">
-                {link.label}
+                {(() => {
+                  const Icon = socialIconByLabel[link.label] || FiShare2;
+                  return <Icon aria-hidden="true" style={{ marginRight: 8 }} />;
+                })()}
+                <span>{link.label}</span>
               </a>
             </li>
           ))}

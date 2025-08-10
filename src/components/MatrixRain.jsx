@@ -45,7 +45,8 @@ function MatrixRain() {
       }
       state.lastFrame = now;
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      // Slightly reduce fade to keep trails brighter
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
       ctx.fillRect(0, 0, state.width, state.height);
 
       for (let i = 0; i < state.columns; i++) {
@@ -53,7 +54,8 @@ function MatrixRain() {
         const x = i * state.fontSize;
         const y = state.drops[i] * state.fontSize;
 
-        ctx.fillStyle = 'rgba(0, 255, 65, 0.85)';
+        // Modestly increase glyph brightness
+        ctx.fillStyle = 'rgba(0, 255, 65, 0.92)';
         ctx.fillText(text, x, y);
 
         if (y > state.height && Math.random() > 0.975) {
